@@ -3,10 +3,11 @@ import jwt from 'jsonwebtoken'
 import { Error } from 'mongoose'
 import { secret } from '../config'
 import type { NextFunction, Response } from 'express'
-import type { ReqWithBody } from '../types/request'
+import type { ReqWithBody, ReqWithUser } from '../types/request'
 import type { User, UserCredentials, UserNormalized, UserSaved } from '../types/user.interface'
 
 const UnprocessableContent = 422
+const UnauthtorizedCode = 401
 
 const normalizeUser = (user: UserSaved): UserNormalized => {
   const token = jwt.sign({ id: user._id, email: user.email }, secret)
@@ -60,4 +61,12 @@ export const login = async (req: ReqWithBody<UserCredentials>, res: Response, ne
   } catch (error) {
     next(error)
   }
+}
+
+export const currentUser = (req: ReqWithUser, res: Response): void => {
+  if (req.user === undefined) {
+    res.sendStatus(UnauthtorizedCode)
+    return
+  }
+  res.send(normalizeUser(req.user))
 }

@@ -1,5 +1,6 @@
 import express, { type NextFunction, type Response } from 'express'
 import mongoose, { type ConnectOptions } from 'mongoose'
+import authMiddleware from './middlewares/auth'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import * as usersControllers from './controllers/users'
@@ -25,6 +26,8 @@ app.post('/api/users', async (req: ReqWithBody<User>, res: Response, next: NextF
 app.post('/api/users/login', async (req: ReqWithBody<UserCredentials>, res: Response, next: NextFunction) => {
   await usersControllers.login(req, res, next)
 })
+
+app.get('/api/user', authMiddleware, usersControllers.currentUser)
 
 io.on('connection', () => {
   console.log('connected')
