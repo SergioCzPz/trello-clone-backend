@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken'
 import { Error } from 'mongoose'
 import { secret } from '../config'
 import type { NextFunction, Response } from 'express'
-import type { ReqWithBody } from '../types/request.register'
-import type { User, UserNormalized, UserSaved } from '../types/user.interface'
+import type { ReqWithBody } from '../types/request'
+import type { User, UserCredentials, UserNormalized, UserSaved } from '../types/user.interface'
 
 const UnprocessableContent = 422
 
@@ -35,6 +35,29 @@ export const register = async (req: ReqWithBody<User>, res: Response, next: Next
       res.status(UnprocessableContent).json(messages)
       return
     }
+    next(error)
+  }
+}
+
+export const login = async (req: ReqWithBody<UserCredentials>, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const user = await UserModel.findOne({ email: req.body.email }).select('+password')
+    const errors = { emailOrPassword: 'Incorrect email or password' }
+
+    if (user === null) {
+      res.status(UnprocessableContent).json(errors)
+      return
+    }
+
+    const isSamePassword = await user.validatePassword(req.body.password)
+
+    if (!isSamePassword) {
+      res.status(UnprocessableContent).json(errors)
+      return
+    }
+
+    res.send(normalizeUser(user))
+  } catch (error) {
     next(error)
   }
 }

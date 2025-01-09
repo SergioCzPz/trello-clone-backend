@@ -9,7 +9,7 @@ export interface User {
 
 export interface UserMethods {
   // eslint-disable-next-line @typescript-eslint/method-signature-style -- Necessary to be an interface
-  validatePassword(password: string): boolean
+  validatePassword(password: string): Promise<boolean>
 }
 
 export type UserModel = Model<User, object, UserMethods>
@@ -32,4 +32,9 @@ export interface UserNormalized {
   username: string
   id: string
   token: string
+}
+
+export interface UserCredentials {
+  email: string
+  password: string
 }
