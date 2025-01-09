@@ -1,10 +1,10 @@
 import express, { type NextFunction, type Response } from 'express'
+import mongoose, { type ConnectOptions } from 'mongoose'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
-import mongoose, { type ConnectOptions } from 'mongoose'
-import type { ReqWithBody } from './types/request.register'
-import type { User } from './types/user.interface'
 import * as usersControllers from './controllers/users'
+import type { User } from './types/user.interface'
+import type { ReqWithBody } from './types/request.register'
 
 const app = express()
 // eslint-disable-next-line @typescript-eslint/no-misused-promises -- check if middleware is async

@@ -31,4 +31,5 @@ export interface UserNormalized {
   email: string
   username: string
   id: string
+  token: string
 }
