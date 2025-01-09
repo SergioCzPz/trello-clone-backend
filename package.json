@@ -1,0 +1,46 @@
+{
+  "name": "trello-back",
+  "version": "1.0.0",
+  "description": "Backend trello clone app",
+  "main": "app.ts",
+  "scripts": {
+    "lint": "npx eslint ./src",
+    "lint:fix": "npx eslint --fix-dry-run ./src",
+    "start:dev": "nodemon - exec 'ts-node' ./src/app.ts",
+    "start:build": "npm run validate-typescript && npm run build:clean && npm run generate-dist",
+    "start": "node ./dist/app.js",
+    "prepare": "husky",
+    "build:clean": "rimraf dist; exit 0",
+    "validate-typescript": "tsc -p tsconfig.prod.json --noEmit",
+    "generate-dist": "swc ./src -d dist --strip-leading-paths"
+  },
+  "author": "Sergio Cruz",
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "19.6.1",
+    "@commitlint/config-conventional": "19.6.0",
+    "@eslint/js": "9.17.0",
+    "@types/bcrypt": "5.0.2",
+    "@types/express": "5.0.0",
+    "@types/node": "22.10.5",
+    "@types/validator": "13.12.2",
+    "eslint": "9.17.0",
+    "eslint-config-love": "113.0.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.2.1",
+    "husky": "9.1.7",
+    "nodemon": "3.1.9",
+    "prettier": "3.4.2",
+    "rimraf": "6.0.1",
+    "ts-node": "10.9.2",
+    "typescript": "5.7.2",
+    "typescript-eslint": "8.18.2"
+  },
+  "dependencies": {
+    "bcrypt": "5.1.1",
+    "express": "4.21.2",
+    "mongoose": "8.9.3",
+    "socket.io": "4.8.1",
+    "validator": "13.12.0"
+  }
+}

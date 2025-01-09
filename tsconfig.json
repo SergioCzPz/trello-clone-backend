@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "CommonJS",
+    "target": "ES2018",
+    "esModuleInterop": true,
+    "strict": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "inlineSources": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "rootDir": "src",
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@/src/*": ["src/*"],
+      "@/app/*": ["src/app/*"],
+      "@/contexts/*": ["src/contexts/*"],
+      "@/shared/*": ["src/contexts/shared/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}
