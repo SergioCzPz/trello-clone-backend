@@ -1,4 +1,5 @@
 import express, { type NextFunction, type Response } from 'express'
+import cors from 'cors'
 import mongoose, { type ConnectOptions } from 'mongoose'
 import authMiddleware from './middlewares/auth'
 import { createServer } from 'http'
@@ -12,6 +13,7 @@ const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer)
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
