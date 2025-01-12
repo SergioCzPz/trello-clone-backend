@@ -15,7 +15,7 @@ const normalizeUser = (user: UserSaved): UserNormalized => {
     email: user.email,
     username: user.username,
     id: user._id.toString(),
-    token,
+    token: `Bearer ${token}`,
   }
 }
 
@@ -26,10 +26,8 @@ export const register = async (req: ReqWithBody<User>, res: Response, next: Next
       username: req.body.username,
       password: req.body.password,
     })
-    console.log('newUser', newUser)
     const savedUser = await newUser.save()
     res.send(normalizeUser(savedUser))
-    console.log('savedUser', savedUser)
   } catch (error) {
     if (error instanceof Error.ValidationError) {
       const messages = Object.values(error.errors).map(err => err.message)
