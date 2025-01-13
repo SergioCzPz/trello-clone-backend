@@ -5,6 +5,7 @@ import authMiddleware from './middlewares/auth'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import * as usersControllers from './controllers/users'
+import * as boardsControllers from './controllers/boards'
 import type { User, UserCredentials } from './types/user.interface'
 import type { ReqWithBody } from './types/request'
 
@@ -17,19 +18,24 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+mongoose.set('toJSON', {
+  virtuals: true,
+  transform: (_, converted) => {
+    delete converted._id
+  },
+})
+
 app.get('/', (req, res) => {
   res.send('API is UP')
 })
-
 app.post('/api/users', async (req: ReqWithBody<User>, res: Response, next: NextFunction) => {
   await usersControllers.register(req, res, next)
 })
-
 app.post('/api/users/login', async (req: ReqWithBody<UserCredentials>, res: Response, next: NextFunction) => {
   await usersControllers.login(req, res, next)
 })
-
 app.get('/api/user', authMiddleware, usersControllers.currentUser)
+app.get('/api/boards', authMiddleware, boardsControllers.getBoards)
 
 io.on('connection', () => {
   console.log('connected')
