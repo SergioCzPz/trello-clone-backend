@@ -7,13 +7,17 @@ import { Server } from 'socket.io'
 import * as usersControllers from './controllers/users'
 import * as boardsControllers from './controllers/boards'
 import type { User, UserCredentials } from './types/user.interface'
-import type { ReqWithBody } from './types/request'
+import type { ReqWithBody, ReqWithUser } from './types/request'
 import type { BoardRequest } from './types/board.interface'
 
 const app = express()
 // eslint-disable-next-line @typescript-eslint/no-misused-promises -- check if middleware is async
 const httpServer = createServer(app)
-const io = new Server(httpServer)
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+  },
+})
 
 app.use(cors())
 app.use(express.json())
@@ -39,6 +43,9 @@ app.get('/api/user', authMiddleware, usersControllers.currentUser)
 app.get('/api/boards', authMiddleware, boardsControllers.getBoards)
 app.post('/api/boards', authMiddleware, async (req: ReqWithBody<BoardRequest>, res: Response, next: NextFunction) => {
   await boardsControllers.createBoard(req, res, next)
+})
+app.get('/api/boards/:boardId', authMiddleware, async (req: ReqWithUser, res: Response, next: NextFunction) => {
+  await boardsControllers.getBoard(req, res, next)
 })
 
 io.on('connection', () => {

@@ -1,4 +1,4 @@
-import type { NextFunction, Response } from 'express'
+import type { NextFunction, Response, Request } from 'express'
 import BoardModel from '../models/board'
 import type { ReqWithBody, ReqWithUser } from '../types/request'
 import type { BoardRequest } from '../types/board.interface'
@@ -32,6 +32,18 @@ export const createBoard = async (req: ReqWithBody<BoardRequest>, res: Response,
     const savedBoard = await newBoard.save()
 
     res.send(savedBoard)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getBoard = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const {
+      params: { boardId },
+    } = req
+    const board = await BoardModel.findOne({ _id: boardId })
+    res.send(board)
   } catch (error) {
     next(error)
   }
