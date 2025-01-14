@@ -8,6 +8,7 @@ import * as usersControllers from './controllers/users'
 import * as boardsControllers from './controllers/boards'
 import type { User, UserCredentials } from './types/user.interface'
 import type { ReqWithBody } from './types/request'
+import type { BoardRequest } from './types/board.interface'
 
 const app = express()
 // eslint-disable-next-line @typescript-eslint/no-misused-promises -- check if middleware is async
@@ -36,6 +37,9 @@ app.post('/api/users/login', async (req: ReqWithBody<UserCredentials>, res: Resp
 })
 app.get('/api/user', authMiddleware, usersControllers.currentUser)
 app.get('/api/boards', authMiddleware, boardsControllers.getBoards)
+app.post('/api/boards', authMiddleware, async (req: ReqWithBody<BoardRequest>, res: Response, next: NextFunction) => {
+  await boardsControllers.createBoard(req, res, next)
+})
 
 io.on('connection', () => {
   console.log('connected')

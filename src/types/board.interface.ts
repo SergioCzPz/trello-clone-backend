@@ -8,3 +8,7 @@ export interface Board {
 }
 
 export interface BoardDocument extends Board, Document {}
+
+export interface BoardRequest {
+  title: string
+}
