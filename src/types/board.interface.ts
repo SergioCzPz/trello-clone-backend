@@ -12,3 +12,7 @@ export interface BoardDocument extends Board, Document {}
 export interface BoardRequest {
   title: string
 }
+
+export interface BoardData {
+  boardId: string
+}

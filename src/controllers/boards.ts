@@ -1,7 +1,9 @@
 import type { NextFunction, Response, Request } from 'express'
 import BoardModel from '../models/board'
 import type { ReqWithBody, ReqWithUser } from '../types/request'
-import type { BoardRequest } from '../types/board.interface'
+import type { BoardData, BoardRequest } from '../types/board.interface'
+import type { Server } from 'socket.io'
+import type { SocketUser } from '../types/socket.interface'
 
 const UnauthtorizedCode = 401
 
@@ -47,4 +49,16 @@ export const getBoard = async (req: Request, res: Response, next: NextFunction):
   } catch (error) {
     next(error)
   }
+}
+
+export const joinBoard = async (io: Server, socket: SocketUser, data: BoardData): Promise<void> => {
+  console.log('server socket io join: ', socket.user)
+
+  await socket.join(data.boardId)
+}
+
+export const leaveBoard = async (io: Server, socket: SocketUser, data: BoardData): Promise<void> => {
+  console.log('server socket io levae: ', data.boardId)
+
+  await socket.leave(data.boardId)
 }
