@@ -9,3 +9,8 @@ export interface ColumnData {
   boardId: string
   title: string
 }
+
+export interface TaskData extends ColumnData {
+  columnId: string
+  description?: string
+}

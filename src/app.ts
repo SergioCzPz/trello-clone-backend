@@ -11,10 +11,11 @@ import { SocketEventsEnum } from './types/socketEvents.enum'
 import * as usersControllers from './controllers/users'
 import * as boardsControllers from './controllers/boards'
 import * as columnsControllers from './controllers/columns'
+import * as tasksControllers from './controllers/tasks'
 import type { User, UserCredentials, UserToken } from './types/user.interface'
 import type { ReqWithBody, ReqWithUser } from './types/request'
 import type { BoardData, BoardRequest } from './types/board.interface'
-import type { ColumnData, SocketUser } from './types/socket.interface'
+import type { ColumnData, SocketUser, TaskData } from './types/socket.interface'
 
 const app = express()
 // eslint-disable-next-line @typescript-eslint/no-misused-promises -- check if middleware is async
@@ -56,6 +57,9 @@ app.get('/api/boards/:boardId', authMiddleware, async (req: ReqWithUser, res: Re
 app.get('/api/boards/:boardId/columns', authMiddleware, async (req: ReqWithUser, res: Response, next: NextFunction) => {
   await columnsControllers.getColumns(req, res, next)
 })
+app.get('/api/boards/:boardId/tasks', authMiddleware, async (req: ReqWithUser, res: Response, next: NextFunction) => {
+  await tasksControllers.getTasks(req, res, next)
+})
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Not return a promise
 io.use(async (socket: SocketUser, next) => {
@@ -89,6 +93,10 @@ io.use(async (socket: SocketUser, next) => {
 
   socket.on(SocketEventsEnum.columnsCreate, async (data: ColumnData) => {
     await columnsControllers.createColumn(io, socket, data)
+  })
+
+  socket.on(SocketEventsEnum.tasksCreate, async (data: TaskData) => {
+    await tasksControllers.createTask(io, socket, data)
   })
 })
 
