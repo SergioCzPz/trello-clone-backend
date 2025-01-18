@@ -16,3 +16,9 @@ export interface BoardRequest {
 export interface BoardData {
   boardId: string
 }
+
+export interface BoardUpdate extends BoardData {
+  fields: {
+    title: string
+  }
+}

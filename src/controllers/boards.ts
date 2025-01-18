@@ -1,9 +1,11 @@
 import type { NextFunction, Response, Request } from 'express'
 import BoardModel from '../models/board'
 import type { ReqWithBody, ReqWithUser } from '../types/request'
-import type { BoardData, BoardRequest } from '../types/board.interface'
+import type { BoardData, BoardRequest, BoardUpdate } from '../types/board.interface'
 import type { Server } from 'socket.io'
 import type { SocketUser } from '../types/socket.interface'
+import { SocketEventsEnum } from '../types/socketEvents.enum'
+import { getErrorMessage } from '../helper/socket.error'
 
 const UnauthtorizedCode = 401
 
@@ -52,13 +54,37 @@ export const getBoard = async (req: Request, res: Response, next: NextFunction):
 }
 
 export const joinBoard = async (io: Server, socket: SocketUser, data: BoardData): Promise<void> => {
-  console.log('server socket io join: ', socket.user)
-
   await socket.join(data.boardId)
 }
 
 export const leaveBoard = async (io: Server, socket: SocketUser, data: BoardData): Promise<void> => {
-  console.log('server socket io levae: ', data.boardId)
-
   await socket.leave(data.boardId)
+}
+
+export const updateBoard = async (io: Server, socket: SocketUser, data: BoardUpdate): Promise<void> => {
+  try {
+    if (socket.user === undefined) {
+      socket.emit(SocketEventsEnum.boardsUpdateFailure, 'User is not authorize')
+      return
+    }
+
+    const updatedBoard = await BoardModel.findByIdAndUpdate(data.boardId, data.fields, { new: true })
+    io.to(data.boardId).emit(SocketEventsEnum.boardsUpdateSuccess, updatedBoard)
+  } catch (error) {
+    socket.emit(SocketEventsEnum.boardsUpdateFailure, getErrorMessage(error))
+  }
+}
+
+export const deleteBoard = async (io: Server, socket: SocketUser, data: BoardData): Promise<void> => {
+  try {
+    if (socket.user === undefined) {
+      socket.emit(SocketEventsEnum.boardsDeleteFailure, 'User is not authorize')
+      return
+    }
+
+    await BoardModel.deleteOne({ _id: data.boardId })
+    io.to(data.boardId).emit(SocketEventsEnum.boardsDeleteSuccess)
+  } catch (error) {
+    socket.emit(SocketEventsEnum.boardsDeleteFailure, getErrorMessage(error))
+  }
 }

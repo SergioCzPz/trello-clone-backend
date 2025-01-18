@@ -9,3 +9,14 @@ export interface Column {
 }
 
 export interface ColumnDocument extends Document, Column {}
+
+export interface ColumnDelete {
+  boardId: string
+  columnId: string
+}
+
+export interface ColumnUpdate extends ColumnDelete {
+  fields: {
+    title: string
+  }
+}

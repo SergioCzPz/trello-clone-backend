@@ -14,8 +14,9 @@ import * as columnsControllers from './controllers/columns'
 import * as tasksControllers from './controllers/tasks'
 import type { User, UserCredentials, UserToken } from './types/user.interface'
 import type { ReqWithBody, ReqWithUser } from './types/request'
-import type { BoardData, BoardRequest } from './types/board.interface'
+import type { BoardData, BoardRequest, BoardUpdate } from './types/board.interface'
 import type { ColumnData, SocketUser, TaskData } from './types/socket.interface'
+import type { ColumnDelete, ColumnUpdate } from './types/column.interface'
 
 const app = express()
 // eslint-disable-next-line @typescript-eslint/no-misused-promises -- check if middleware is async
@@ -97,6 +98,22 @@ io.use(async (socket: SocketUser, next) => {
 
   socket.on(SocketEventsEnum.tasksCreate, async (data: TaskData) => {
     await tasksControllers.createTask(io, socket, data)
+  })
+
+  socket.on(SocketEventsEnum.boardsUpdate, async (data: BoardUpdate) => {
+    await boardsControllers.updateBoard(io, socket, data)
+  })
+
+  socket.on(SocketEventsEnum.boardsDelete, async (data: BoardData) => {
+    await boardsControllers.deleteBoard(io, socket, data)
+  })
+
+  socket.on(SocketEventsEnum.columnsDelete, async (data: ColumnDelete) => {
+    await columnsControllers.deleteColumn(io, socket, data)
+  })
+
+  socket.on(SocketEventsEnum.columnsUpdate, async (data: ColumnUpdate) => {
+    await columnsControllers.updateColumn(io, socket, data)
   })
 })
 
