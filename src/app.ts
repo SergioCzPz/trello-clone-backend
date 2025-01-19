@@ -17,6 +17,7 @@ import type { ReqWithBody, ReqWithUser } from './types/request'
 import type { BoardData, BoardRequest, BoardUpdate } from './types/board.interface'
 import type { ColumnData, SocketUser, TaskData } from './types/socket.interface'
 import type { ColumnDelete, ColumnUpdate } from './types/column.interface'
+import type { TaskDelete, TaskUpdate } from './types/task.interface'
 
 const app = express()
 // eslint-disable-next-line @typescript-eslint/no-misused-promises -- check if middleware is async
@@ -114,6 +115,14 @@ io.use(async (socket: SocketUser, next) => {
 
   socket.on(SocketEventsEnum.columnsUpdate, async (data: ColumnUpdate) => {
     await columnsControllers.updateColumn(io, socket, data)
+  })
+
+  socket.on(SocketEventsEnum.taskUpdate, async (data: TaskUpdate) => {
+    await tasksControllers.updateTask(io, socket, data)
+  })
+
+  socket.on(SocketEventsEnum.taskDelete, async (data: TaskDelete) => {
+    await tasksControllers.deleteTask(io, socket, data)
   })
 })
 
